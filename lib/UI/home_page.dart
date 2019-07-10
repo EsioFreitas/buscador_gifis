@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:share/share.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import 'gif_page.dart';
 
@@ -17,7 +18,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<Map> _getGifs() async {
     http.Response response;
-    if (_search == null)
+    if (_search == null || _search.isEmpty)
       response = await http.get(
           "https://api.giphy.com/v1/gifs/trending?api_key=tCbPlwaGzSk5AXO9EsT1fjBz6mS31STU&limit=22&rating=G");
     else
@@ -118,11 +119,13 @@ class _HomePageState extends State<HomePage> {
                     ['fixed_height_still']['url']);
                 print('oi');
               },
-              child: Image.network(
-                  snapshot.data['data'][index]['images']['fixed_height_still']
-                      ['url'],
-                  height: 300,
-                  fit: BoxFit.cover),
+              child: FadeInImage.memoryNetwork(
+                placeholder: kTransparentImage,
+                image: snapshot.data['data'][index]['images']
+                    ['fixed_height_still']['url'],
+                height: 300,
+                fit: BoxFit.cover,
+              ),
             );
           } else {
             return Container(
