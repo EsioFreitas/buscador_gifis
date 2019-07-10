@@ -2,6 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:share/share.dart';
+
+import 'gif_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -91,7 +94,7 @@ class _HomePageState extends State<HomePage> {
     if (_search == null)
       return data.length;
     else
-      return data.length+1;
+      return data.length + 1;
   }
 
   Widget _createGifTable(BuildContext contex, AsyncSnapshot snapshot) {
@@ -103,16 +106,28 @@ class _HomePageState extends State<HomePage> {
         itemBuilder: (context, index) {
           if (_search == null || index < snapshot.data['data'].length) {
             return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (contex) =>
+                            GifPage(snapshot.data['data'][index])));
+              },
+              onLongPress: () {
+                Share.share(snapshot.data['data'][index]['images']
+                    ['fixed_height_still']['url']);
+                print('oi');
+              },
               child: Image.network(
                   snapshot.data['data'][index]['images']['fixed_height_still']
-                  ['url'],
+                      ['url'],
                   height: 300,
                   fit: BoxFit.cover),
             );
           } else {
             return Container(
               child: GestureDetector(
-                onTap: (){
+                onTap: () {
                   setState(() {
                     _offSet += 19;
                   });
